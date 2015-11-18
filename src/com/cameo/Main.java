@@ -1,68 +1,63 @@
 package com.cameo;
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.*;
 public class Main {
 
-//Mason from the Learning Center helped me add the generics to the array lists
     public static void main(String[] args) {
-        //Create hashmap to store Lake names and run times
-        //The key will be the lake name stored as a string
 
-        HashMap<String, ArrayList> lakeRunTimes = new HashMap();
+        //Create array list to store all lakes that have been ran around
+        ArrayList<Lake> lakesIveRanAround = new ArrayList<>();
 
-        ArrayList<Double> Calhoun = new ArrayList();
-        Calhoun.add(45.15);
-        Calhoun.add(43.32);
+        //Three Lake objects
+        Lake calhoun = new Lake("Lake Calhoun");
+        calhoun.addRunTime(45.15);
+        calhoun.addRunTime(43.32);
+        lakesIveRanAround.add(calhoun);
 
-        ArrayList<Double> Harriet = new ArrayList();
-        Harriet.add(49.34);
-        Harriet.add(44.43);
-        Harriet.add(46.22);
+        Lake harriet = new Lake("Lake Harriet");
+        harriet.addRunTime(49.34);
+        harriet.addRunTime(44.43);
+        harriet.addRunTime(46.22);
+        lakesIveRanAround.add(harriet);
 
-        ArrayList<Double> Como = new ArrayList();
-        Como.add(32.11);
-        Como.add(28.14);
+        Lake como = new Lake("Lake Como");
+        como.addRunTime(32.11);
+        como.addRunTime(28.14);
+        lakesIveRanAround.add(como);
 
-        //Add data to hash map
-        lakeRunTimes.put("Calhoun", Calhoun);
-        lakeRunTimes.put("Harriet", Harriet);
-        lakeRunTimes.put("Como", Como);
+        while(true) {
+            try {
+                //Create scanner to obtain new lake and run times
+                Scanner s = new Scanner(System.in);
+                System.out.println("Enter the lake you just ran around");
+                String lake = s.nextLine();
+                System.out.println("Enter your run time for this lake");
+                double newRunTime = Double.parseDouble(s.nextLine());
 
-        Set<String> keySet = lakeRunTimes.keySet();
-        System.out.println(keySet + " are the lakes for which you have recorded run times.");
+                boolean createNewLake = true;  //Assume lake has not been ran around
 
-        //Create scanner to obtain lake and run time
-        Scanner s = new Scanner(System.in);
-        System.out.println("Enter the lake you just ran around");
-        String lake = s.nextLine();
-        System.out.println("Enter your run time for this lake");
-        double runTime = Double.parseDouble(s.nextLine());
+                for (Lake eachLake : lakesIveRanAround) {
+                    if (eachLake.getName().toLowerCase().equals(lake.toLowerCase())) { //If lake has already been ran around, add runTime
+                        eachLake.addRunTime(newRunTime);
+                        System.out.println("Since you've already run around this lake, this new time has been added to the list");
+                        createNewLake = false;
+                    }
+                }
 
-        //Check to see if the lake is already in the hash map.
-        if (lakeRunTimes.containsKey(lake)){
-            //received help from Mason in Learning Center with next line of code
-            lakeRunTimes.get(lake).add(runTime);
-        }
-        else {
-            ArrayList<Double> newLake = new ArrayList();   //Creates new array list for new lake
-            newLake.add(runTime);
-            lakeRunTimes.put(lake, newLake);    //Adds lake name to Hashmap
-        }
+                if (createNewLake) { //Create new Lake object,
+                    Lake lakeToAdd = new Lake(lake);
+                    lakesIveRanAround.add(lakeToAdd);
+                    lakeToAdd.addRunTime(newRunTime);
+                }
 
-        for (String eachLake : keySet) {
-            System.out.println("Your fastest time for Lake " + eachLake + " is " + fastestTime(lakeRunTimes.get(eachLake)));
-        }
-    }
-
-    private static double fastestTime(ArrayList<Double> theLake) {
-        //TODO figure out what to use instead of 9999
-        double shortestTime = 9999;
-        for (Double time : theLake) {
-            if (time < shortestTime) {
-                shortestTime = time;
+                //Display fastest time for each lake
+                for (Lake eachLake : lakesIveRanAround) {
+                    System.out.println("Your fastest time for " + eachLake.getName() + " is " + eachLake.fastestTime());
+                }
+            } catch (Exception e) {
+                System.out.println(e.toString());
             }
         }
-        return shortestTime;
-     }
     }
+}
 
